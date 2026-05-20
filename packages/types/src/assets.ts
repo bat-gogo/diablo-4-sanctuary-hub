@@ -2,8 +2,10 @@
  * R2 asset manifest for Sanctuary Hub.
  *
  * Keys follow `{category}/{slug}.{ext}` where ext reflects what was actually
- * uploaded — real D4 art lives as `.png` (from sunderarmor.com/DIABLO4/...),
- * thematic fallbacks live as `.svg` (game-icons.net, MIT).
+ * uploaded:
+ *   - `.webp` — real D4 art from Fandom Wiki (classes + 26 named uniques)
+ *   - `.png`  — real D4 skill icons from d4builds' CDN (sunderarmor.com)
+ *   - `.svg`  — game-icons.net thematic fallbacks (MIT)
  *
  * The bucket is publicly readable at NEXT_PUBLIC_R2_PUBLIC_URL.
  */
@@ -11,15 +13,15 @@
 const R2_BASE = process.env.NEXT_PUBLIC_R2_PUBLIC_URL ?? '';
 
 export const ASSETS = {
-  // Real D4 class portraits.
+  // Real D4 promo art (Blizzard, hosted on Fandom Wiki CDN).
   classes: {
-    barbarian:   'classes/barbarian.png',
-    druid:       'classes/druid.png',
-    necromancer: 'classes/necromancer.png',
-    rogue:       'classes/rogue.png',
-    sorcerer:    'classes/sorcerer.png',
-    spiritborn:  'classes/spiritborn.png',
-    paladin:     'classes/paladin.png',
+    barbarian:   'classes/barbarian.webp',
+    druid:       'classes/druid.webp',
+    necromancer: 'classes/necromancer.webp',
+    rogue:       'classes/rogue.webp',
+    sorcerer:    'classes/sorcerer.webp',
+    spiritborn:  'classes/spiritborn.webp',
+    paladin:     'classes/paladin.webp',
   },
   itemTypes: {
     weapon:  'items/weapon.svg',
@@ -41,7 +43,40 @@ export const ASSETS = {
     mythic:  'items/mythic.svg',
     unique:  'items/unique.svg',
   },
-  // Mix of real D4 skill PNGs and themed SVG fallbacks.
+  /**
+   * Real D4 inventory icons for specific unique + mythic items, keyed by the
+   * exact item name as it appears in the seed schema. Items not in this map
+   * (3 of 30: Grandfather, Mantle of the Mountain, Blood Artisan's Cuirass)
+   * fall back to type icons via uniqueItemIcon().
+   */
+  uniques: {
+    "Tyrael's Might":               'uniques/tyrael_s_might.webp',
+    "Andariel's Visage":            'uniques/andariel_s_visage.webp',
+    "Harlequin Crest":              'uniques/harlequin_crest.webp',
+    "Melted Heart of Selig":        'uniques/melted_heart_of_selig.webp',
+    "Ring of Starless Skies":       'uniques/ring_of_starless_skies.webp',
+    "Doombringer":                  'uniques/doombringer.webp',
+    "Shako":                        'uniques/shako.webp',
+    "Azurewrath":                   'uniques/azurewrath.webp',
+    "Fleshrender":                  'uniques/fleshrender.webp',
+    "Paingorger's Gauntlets":       'uniques/paingorger_s_gauntlets.webp',
+    "Temerity":                     'uniques/temerity.webp',
+    "Arreat's Bearing":             'uniques/arreat_s_bearing.webp',
+    "Rage of Harrogath":            'uniques/rage_of_harrogath.webp',
+    "Ancients' Oath":               'uniques/ancients_oath.webp',
+    "Greatstaff of the Crone":      'uniques/greatstaff_of_the_crone.webp',
+    "Waxing Gibbous":               'uniques/waxing_gibbous.webp',
+    "Black River":                  'uniques/black_river.webp',
+    "Howl from Below":              'uniques/howl_from_below.webp',
+    "Word of Hakan":                'uniques/word_of_hakan.webp',
+    "Condemnation":                 'uniques/condemnation.webp',
+    "Grasp of Shadow":              'uniques/grasp_of_shadow.webp',
+    "Iceheart Brais":               'uniques/iceheart_brais.webp',
+    "Tal Rasha's Iridescent Loop":  'uniques/tal_rasha_s_iridescent_loop.webp',
+    "Staff of Lam Esen":            'uniques/staff_of_lam_esen.webp',
+    "Fractured Winterglass":        'uniques/fractured_winterglass.webp',
+  } as Record<string, string>,
+  // Mix of real D4 skill PNGs (d4builds CDN) and themed SVG fallbacks.
   skills: {
     active:            'skills/active.svg',
     passive:           'skills/passive.svg',
@@ -109,6 +144,20 @@ export function itemTypeIcon(
   if (isUnique) return assetUrl(ASSETS.itemTypes.unique);
   const key = type as keyof typeof ASSETS.itemTypes;
   return assetUrl(ASSETS.itemTypes[key] ?? ASSETS.itemTypes.weapon);
+}
+
+/**
+ * Real D4 inventory icon for a named unique/mythic item, falling back to
+ * the type icon (with mythic/unique badge) if we don't have art for it.
+ */
+export function uniqueItemIcon(
+  itemName: string,
+  itemType: string,
+  isMythic = false,
+): string {
+  const path = ASSETS.uniques[itemName];
+  if (path) return assetUrl(path);
+  return itemTypeIcon(itemType, isMythic, true);
 }
 
 export function skillIcon(

@@ -36,13 +36,18 @@ const SUNDER = (folder: string, slug: string) =>
 const GI = (artist: string, slug: string) =>
   `https://raw.githubusercontent.com/game-icons/icons/master/${artist}/${slug}.svg`;
 
+// Fandom Wiki CDN. Note: although URLs end in .png/.jpg, the CDN always
+// serves WebP regardless of Accept header.
+const FANDOM = (path: string) =>
+  `https://static.wikia.nocookie.net/diablo/images/${path}`;
+
 // ───────────────────────────────────────────────────────────────
 // Source registry — primary (real D4 PNG, ideally) → fallback (SVG)
 // ───────────────────────────────────────────────────────────────
 
 interface Variant {
   url: string;
-  ext: 'png' | 'svg' | 'jpg';
+  ext: 'png' | 'svg' | 'jpg' | 'webp';
   contentType: string;
 }
 
@@ -53,17 +58,29 @@ interface Source {
   variants: Variant[];
 }
 
-const png = (url: string): Variant => ({ url, ext: 'png', contentType: 'image/png' });
-const svg = (url: string): Variant => ({ url, ext: 'svg', contentType: 'image/svg+xml' });
+const png  = (url: string): Variant => ({ url, ext: 'png',  contentType: 'image/png' });
+const svg  = (url: string): Variant => ({ url, ext: 'svg',  contentType: 'image/svg+xml' });
+const webp = (url: string): Variant => ({ url, ext: 'webp', contentType: 'image/webp' });
 
-// All 7 classes confirmed at sunderarmor.com/DIABLO4/Classes/2/{lower}.png
+// Fandom Wiki has real Blizzard D4 promo art for each class. Falls back to
+// d4builds' planner icon, then a thematic game-icons SVG.
+const CLASS_FANDOM: Record<string, string> = {
+  barbarian:   'b/b7/D4_Barbarian.png/revision/latest?cb=20191103014800',
+  druid:       'f/fa/D4_Druid.png/revision/latest?cb=20191103014820',
+  necromancer: 'f/fe/NecromancerD4-home.jpg/revision/latest?cb=20220623130841',
+  rogue:       'f/fa/D4_Rogue_key_art.png/revision/latest?cb=20210223125003',
+  sorcerer:    'c/c9/D4_Sorceress.png/revision/latest?cb=20191103014843',
+  spiritborn:  'b/bc/Spiritborn2.jpg/revision/latest?cb=20240616083551',
+  paladin:     'c/ce/Paladin_D4-cncpt1.jpg/revision/latest?cb=20260518124933',
+};
+
 const CLASS_SOURCES: Source[] = (
   ['barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin'] as const
 ).map((c) => ({
   base: `classes/${c}`,
   variants: [
-    png(SUNDER('Classes/2', c)),
-    // SVG fallback — themed game-icons
+    webp(FANDOM(CLASS_FANDOM[c])),     // real Blizzard promo art
+    png(SUNDER('Classes/2', c)),       // d4builds planner icon
     svg(GI('lorc', c === 'barbarian' ? 'muscle-up'
         : c === 'druid' ? 'wolf-head'
         : c === 'necromancer' ? 'skull-crack'
@@ -73,6 +90,52 @@ const CLASS_SOURCES: Source[] = (
         : 'angel-wings')),
   ],
 }));
+
+// Real D4 inventory icons for unique + mythic items, sourced from Fandom Wiki.
+// Keyed by the canonical item name in our seed schema.
+const UNIQUE_FANDOM: Record<string, string> = {
+  // Mythic
+  "Tyrael's Might":           '0/02/Tyrael%27s_Might-D4.jpg/revision/latest?cb=20240322091756',
+  "Andariel's Visage":        '3/33/Andariel%27s_Visage-D4.jpg/revision/latest?cb=20230926125338',
+  "Harlequin Crest":          'a/a1/Harlequin_Crest-D4.jpg/revision/latest?cb=20230427071316',
+  "Melted Heart of Selig":    '4/4c/Melted_Heart_of_Selig.jpg/revision/latest?cb=20231101080229',
+  "Ring of Starless Skies":   '2/2f/Ring_of_Starless_Skies.jpg/revision/latest?cb=20230901003112',
+  "Doombringer":              'e/eb/Doombringer-D4.jpg/revision/latest?cb=20231021074456',
+  // Shako is the community nickname for Harlequin Crest — share the icon.
+  "Shako":                    'a/a1/Harlequin_Crest-D4.jpg/revision/latest?cb=20230427071316',
+  // Unique weapons / armor
+  "Azurewrath":               'b/be/Azurewrath-D4.jpg/revision/latest?cb=20230814125123',
+  "Fleshrender":              'c/c0/Fleshrender-D4.jpg/revision/latest?cb=20230814125957',
+  "Paingorger's Gauntlets":   '9/94/Paingorger%27s_Gauntlets.jpg/revision/latest?cb=20240430232700',
+  "Temerity":                 'f/f6/Temerity.jpg/revision/latest?cb=20230427075505',
+  "Arreat's Bearing":         '6/6f/Arreat%27s_Bearing.jpg/revision/latest?cb=20240516120510',
+  "Rage of Harrogath":        '9/9a/Rage_of_Harrogath.jpg/revision/latest?cb=20231101113536',
+  "Ancients' Oath":           '3/39/Ancient%27s_Oath.jpg/revision/latest?cb=20231111030105',
+  "Greatstaff of the Crone":  'e/e3/Greatstaff_of_the_Crone.jpg/revision/latest?cb=20231003222746',
+  "Waxing Gibbous":           '6/6b/Waxing_Gibbous.jpg/revision/latest?cb=20240414102850',
+  "Black River":              '4/43/Black_River.jpg/revision/latest?cb=20231004031720',
+  "Howl from Below":          'e/e7/Howl_from_Below.jpg/revision/latest?cb=20231008081935',
+  "Word of Hakan":            '3/34/Word_of_Hakan.jpg/revision/latest?cb=20230427082533',
+  "Condemnation":             '8/89/Condemnation.jpg/revision/latest?cb=20230820091102',
+  "Grasp of Shadow":          '1/1e/Grasp_of_Shadow.jpg/revision/latest?cb=20240414212321',
+  "Iceheart Brais":           'c/c0/Iceheart_Brais.jpg/revision/latest?cb=20240414212731',
+  "Tal Rasha's Iridescent Loop": '6/6e/Tal_Rasha%27s_Iridescent_Loop.jpg/revision/latest?cb=20231110104524',
+  "Staff of Lam Esen":        '3/3b/Staff_of_Lam_Esen.jpg/revision/latest?cb=20231111035613',
+  "Fractured Winterglass":    'e/e6/Fractured_Winterglass.png/revision/latest?cb=20250911232617',
+  // 3 items had no Fandom article (Grandfather, Mantle of the Mountain,
+  // Blood Artisan's Cuirass) — they fall back to type icons at runtime.
+};
+
+function slugify(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
+const UNIQUE_SOURCES: Source[] = Object.entries(UNIQUE_FANDOM).map(
+  ([name, path]) => ({
+    base: `uniques/${slugify(name)}`,
+    variants: [webp(FANDOM(path))],
+  }),
+);
 
 const ITEM_SOURCES: Source[] = [
   // Item type icons — game-icons (no real D4 source exposes these)
@@ -152,6 +215,7 @@ const UI_SOURCES: Source[] = [
 
 const ALL_SOURCES: Source[] = [
   ...CLASS_SOURCES,
+  ...UNIQUE_SOURCES,
   ...ITEM_SOURCES,
   ...SKILL_SOURCES,
   ...EVENT_SOURCES,
@@ -207,7 +271,9 @@ async function main() {
       failed.push({ base: src.base, tried: src.variants.map((v) => v.url) });
       continue;
     }
-    const isD4 = got.variant.url.includes('sunderarmor.com');
+    const isD4 =
+      got.variant.url.includes('sunderarmor.com') ||
+      got.variant.url.includes('wikia.nocookie.net');
     if (isD4) realD4++;
     else svgFallback++;
     const key = `${src.base}.${got.variant.ext}`;
