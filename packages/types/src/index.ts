@@ -1,3 +1,5 @@
+export * from './assets';
+
 import type { InferSelectModel } from 'drizzle-orm';
 import {
   builds,
