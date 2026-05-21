@@ -7,8 +7,13 @@ export async function middleware(request: NextRequest) {
   const payload = token ? await verifyToken(token) : null;
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/admin') && payload?.role !== 'admin') {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (pathname.startsWith('/admin')) {
+    if (!payload) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
+    if (payload.role !== 'admin') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
   }
 
   const protectedPaths = ['/dashboard', '/builds/create'];

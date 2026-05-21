@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { classImage } from '@sanctuary-hub/types';
 import { ClassBadge } from './ClassBadge';
 import { PlaystyleBadge } from './PlaystyleBadge';
@@ -10,22 +13,30 @@ function formatScore(n: number): string {
 }
 
 export function BuildCard({ build }: { build: BuildWithMeta }) {
+  const router = useRouter();
   const bg = classImage(build.class);
+  const author = build.user.battletag.split('#')[0];
+
   return (
-    <Link
-      href={`/builds/${build.id}`}
-      className="group relative overflow-hidden rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-amber-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 p-4 flex flex-col gap-2 min-h-[180px]"
+    <div
+      onClick={() => router.push(`/builds/${build.id}`)}
+      role="link"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') router.push(`/builds/${build.id}`);
+      }}
+      className="group relative overflow-hidden rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-amber-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 p-4 flex flex-col gap-2 min-h-[180px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/60"
     >
-      {/* Class artwork backdrop */}
       <div
         className="absolute inset-0 bg-cover bg-top opacity-20 group-hover:opacity-30 transition-opacity"
         style={{ backgroundImage: `url(${bg})` }}
         aria-hidden
       />
-      {/* Gradient overlay for legibility */}
-      <div className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/80 to-zinc-900/40" aria-hidden />
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-zinc-900 via-zinc-900/80 to-zinc-900/40"
+        aria-hidden
+      />
 
-      {/* Content */}
       <div className="relative z-10 flex flex-col gap-2 h-full">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <div className="flex items-center gap-1.5 flex-wrap">
@@ -49,7 +60,14 @@ export function BuildCard({ build }: { build: BuildWithMeta }) {
 
         <div className="mt-auto flex items-center justify-between text-xs text-zinc-400 pt-2">
           <span className="truncate">
-            by <span className="text-zinc-300">{build.user.battletag.split('#')[0]}</span>
+            by{' '}
+            <Link
+              href={`/players/${encodeURIComponent(build.user.battletag)}`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-zinc-300 hover:text-amber-300 underline-offset-2 hover:underline transition-colors"
+            >
+              {author}
+            </Link>
           </span>
           <div className="flex items-center gap-3 text-zinc-500 shrink-0">
             <span title="Views" className="inline-flex items-center gap-1">
@@ -73,6 +91,6 @@ export function BuildCard({ build }: { build: BuildWithMeta }) {
           </div>
         </div>
       </div>
-    </Link>
+    </div>
   );
 }
