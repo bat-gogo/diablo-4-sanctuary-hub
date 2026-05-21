@@ -21,6 +21,7 @@ export const CLASS_ICON_COLORS: Record<string, keyof typeof COLOR_FILTERS> = {
   sorcerer:    'blue',
   spiritborn:  'teal',
   paladin:     'amber',
+  warlock:     'purple',
 };
 
 interface GameIconProps {

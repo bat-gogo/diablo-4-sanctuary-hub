@@ -7,7 +7,7 @@ import { ClassBadge } from '@/components/ClassBadge';
 import { PlaystyleBadge } from '@/components/PlaystyleBadge';
 
 const CLASSES = [
-  'barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin',
+  'barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin', 'warlock',
 ] as const;
 const PLAYSTYLES = ['leveling', 'endgame', 'pit', 'helltide', 'pvp'] as const;
 const SEASONS = [3, 4, 5, 6, 7];

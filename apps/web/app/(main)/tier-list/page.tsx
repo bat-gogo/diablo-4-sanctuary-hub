@@ -8,7 +8,7 @@ import type { BuildWithMeta } from '@/lib/services/builds.service';
 export const metadata = { title: 'Tier List — Sanctuary Hub' };
 
 const CLASSES = [
-  'barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin',
+  'barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin', 'warlock',
 ] as const;
 
 const TIERS = [

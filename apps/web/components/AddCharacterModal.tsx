@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { classImage } from '@sanctuary-hub/types';
 
 const CLASSES = [
-  'barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin',
+  'barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin', 'warlock',
 ] as const;
 const SEASONS = [3, 4, 5, 6, 7];
 

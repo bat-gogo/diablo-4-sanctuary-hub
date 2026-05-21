@@ -27,6 +27,7 @@ export const CLASSES = [
   'sorcerer',
   'spiritborn',
   'paladin',
+  'warlock',
 ] as const;
 
 export const SKILL_TYPES = ['active', 'passive', 'ultimate'] as const;
@@ -271,6 +272,29 @@ export const votes = pgTable(
 );
 
 // ─────────────────────────────────────────────────────────────
+// 10. worldBossHistory — mirrored from diablo4.life community reports
+// ─────────────────────────────────────────────────────────────
+
+export const worldBossHistory = pgTable(
+  'world_boss_history',
+  {
+    id: uuid('id').primaryKey().default(sql`gen_random_uuid()`),
+    /** Stable upstream id so re-imports are idempotent. */
+    sourceId: varchar('source_id', { length: 64 }).notNull().unique(),
+    bossName: varchar('boss_name', { length: 128 }).notNull(),
+    location: varchar('location', { length: 128 }).notNull(),
+    spawnedAt: timestamp('spawned_at', { withTimezone: true }).notNull(),
+    reportedBy: varchar('reported_by', { length: 128 }),
+    tier: integer('tier'),
+    createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => ({
+    spawnedAtIdx: index('wbh_spawned_at_idx').on(t.spawnedAt.desc()),
+    bossNameIdx: index('wbh_boss_name_idx').on(t.bossName),
+  }),
+);
+
+// ─────────────────────────────────────────────────────────────
 // Relations
 // ─────────────────────────────────────────────────────────────
 
@@ -357,6 +381,7 @@ export const schema = {
   partyRequests,
   comments,
   votes,
+  worldBossHistory,
   usersRelations,
   charactersRelations,
   skillsRelations,

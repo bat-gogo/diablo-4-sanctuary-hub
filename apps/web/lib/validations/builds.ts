@@ -8,6 +8,7 @@ const CLASS_ENUM = [
   'sorcerer',
   'spiritborn',
   'paladin',
+  'warlock',
 ] as const;
 
 const PLAYSTYLE_ENUM = [

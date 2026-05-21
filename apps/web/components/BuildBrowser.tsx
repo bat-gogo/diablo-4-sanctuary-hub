@@ -19,7 +19,7 @@ interface Filters {
 
 const EMPTY_FILTERS: Filters = { class: '', season: 0, playstyle: '', search: '' };
 
-const CLASSES = ['barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin'];
+const CLASSES = ['barbarian', 'druid', 'necromancer', 'rogue', 'sorcerer', 'spiritborn', 'paladin', 'warlock'];
 const CLASS_ACTIVE_BG: Record<string, string> = {
   barbarian: 'bg-red-600 text-white',
   druid: 'bg-green-600 text-white',
@@ -28,6 +28,7 @@ const CLASS_ACTIVE_BG: Record<string, string> = {
   sorcerer: 'bg-blue-600 text-white',
   spiritborn: 'bg-teal-600 text-white',
   paladin: 'bg-amber-600 text-white',
+  warlock: 'bg-slate-600 text-white',
 };
 
 const PLAYSTYLES = ['leveling', 'endgame', 'pit', 'helltide', 'pvp'];

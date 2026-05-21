@@ -6,6 +6,7 @@ const CLASS_STYLES: Record<string, { bg: string; text: string; border: string; d
   sorcerer:    { bg: 'bg-blue-900/60',   text: 'text-blue-300',   border: 'border-blue-800',   dot: 'bg-blue-400' },
   spiritborn:  { bg: 'bg-teal-900/60',   text: 'text-teal-300',   border: 'border-teal-800',   dot: 'bg-teal-400' },
   paladin:     { bg: 'bg-amber-900/60',  text: 'text-amber-300',  border: 'border-amber-800',  dot: 'bg-amber-400' },
+  warlock:     { bg: 'bg-slate-900/60',  text: 'text-slate-300',  border: 'border-slate-700',  dot: 'bg-slate-400' },
 };
 
 interface ClassBadgeProps {

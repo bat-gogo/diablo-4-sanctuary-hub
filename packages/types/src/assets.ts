@@ -22,6 +22,7 @@ export const ASSETS = {
     sorcerer:    'classes/sorcerer.webp',
     spiritborn:  'classes/spiritborn.webp',
     paladin:     'classes/paladin.webp',
+    warlock:     'classes/warlock.webp',
   },
   itemTypes: {
     weapon:  'items/weapon.svg',

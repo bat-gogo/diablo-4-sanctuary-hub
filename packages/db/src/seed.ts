@@ -67,6 +67,10 @@ const ULTIMATES = new Set([
   'Inferno',
   'Unrestrained Power',
   'Wrath of Heaven',
+  // Warlock (Lord of Hatred expansion)
+  'Apocalypse Pact',
+  "Lord of Terror's Wrath",
+  'Eternal Damnation',
 ]);
 
 const SKILL_LISTS: Record<ClassType, { active: string[]; passive: string[] }> = {
@@ -154,6 +158,20 @@ const SKILL_LISTS: Record<ClassType, { active: string[]; passive: string[] }> = 
     passive: [
       'Holy Fervor', 'Divine Strength', 'Crusader',
       'Sacred Ground', 'Righteous Fire', 'Devoted',
+    ],
+  },
+  warlock: {
+    active: [
+      'Soul Rend', 'Hex Bolt', 'Demonic Pact', 'Void Grasp',
+      'Infernal Chains', 'Shadow Bargain', 'Eldritch Blast', 'Curse of Agony',
+      'Summon Familiar', 'Hellfire Surge', 'Dark Covenant', 'Consume Soul',
+      'Nether Storm', 'Corruption Nova',
+      // Ultimates
+      'Apocalypse Pact', "Lord of Terror's Wrath", 'Eternal Damnation',
+    ],
+    passive: [
+      'Forbidden Knowledge', 'Dark Resilience', 'Soul Harvest',
+      'Corrupted Essence', 'Pact Binding', 'Infernal Mastery',
     ],
   },
 };
@@ -384,6 +402,11 @@ const BUILD_TITLES: Record<ClassType, string[]> = {
   sorcerer: ['Ice Shards Frozen', 'Ball Lightning Arc', 'Blizzard Sorceress', 'Fireball Meteor', 'Chain Lightning'],
   spiritborn: ['Quill Volley Eagle', 'Crushing Hand Gorilla', 'Touch of Death Centipede', 'Ravager Jaguar'],
   paladin: ['Holy Bolt Zealot', 'Smite Consecration', 'Sacred Fire Wrath', 'Hammer Justice'],
+  warlock: [
+    'Soul Rend Decay', 'Eldritch Blast Annihilator', 'Hex Bolt Plague',
+    'Hellfire Pyromancer', 'Summon Familiar Pact', 'Nether Storm Caster',
+    'Dark Covenant Sacrifice',
+  ],
 };
 
 function pickSeason(): number {
