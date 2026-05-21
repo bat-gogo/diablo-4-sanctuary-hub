@@ -73,7 +73,6 @@ export async function GET(request: Request) {
     },
     rank: {
       name: rank.name,
-      nameEn: rank.nameEn,
       icon: rank.icon,
     },
   });

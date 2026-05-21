@@ -6,7 +6,6 @@
 
 export type RankTier = {
   name: string;
-  nameEn: string;
   minScore: number;
   color: string;
   bgColor: string;
@@ -17,54 +16,49 @@ export type RankTier = {
 
 export const RANKS: RankTier[] = [
   {
-    name: 'Нефалем',
-    nameEn: 'Nephalem',
+    name: 'Nephalem',
     minScore: 0,
     color: 'text-zinc-400',
     bgColor: 'bg-zinc-800',
     borderColor: 'border-zinc-600',
     icon: '◈',
-    description: 'Новобранец в Sanctuary',
+    description: 'New arrival in Sanctuary',
   },
   {
-    name: 'Изследовател',
-    nameEn: 'Explorer',
+    name: 'Explorer',
     minScore: 10,
     color: 'text-green-400',
     bgColor: 'bg-green-900/40',
     borderColor: 'border-green-700',
     icon: '⟁',
-    description: 'Познава пътищата на Sanctuary',
+    description: 'Knows the roads of Sanctuary',
   },
   {
-    name: 'Герой',
-    nameEn: 'Hero',
+    name: 'Hero',
     minScore: 50,
     color: 'text-blue-400',
     bgColor: 'bg-blue-900/40',
     borderColor: 'border-blue-700',
     icon: '✦',
-    description: 'Доказал се в битка',
+    description: 'Proven in battle',
   },
   {
-    name: 'Шампион',
-    nameEn: 'Champion',
+    name: 'Champion',
     minScore: 200,
     color: 'text-amber-400',
     bgColor: 'bg-amber-900/40',
     borderColor: 'border-amber-700',
     icon: '❋',
-    description: 'Легендарен боец',
+    description: 'A legendary warrior',
   },
   {
-    name: 'Легенда',
-    nameEn: 'Legend',
+    name: 'Legend',
     minScore: 1000,
     color: 'text-red-400',
     bgColor: 'bg-red-900/40',
     borderColor: 'border-red-700',
     icon: '✸',
-    description: 'Мит в Sanctuary',
+    description: 'A myth of Sanctuary',
   },
 ];
 

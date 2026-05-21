@@ -46,7 +46,7 @@ export function RankBadge({ score, size = 'md', showProgress = false }: RankBadg
             />
           </div>
           <span className="text-[10px] text-zinc-500 tabular-nums whitespace-nowrap">
-            {score - rank.minScore}/{next.minScore - rank.minScore} → {next.nameEn}
+            {score - rank.minScore}/{next.minScore - rank.minScore} → {next.name}
           </span>
         </div>
       )}
