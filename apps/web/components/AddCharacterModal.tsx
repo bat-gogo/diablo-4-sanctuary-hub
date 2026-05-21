@@ -8,13 +8,25 @@ const CLASSES = [
 ] as const;
 const SEASONS = [3, 4, 5, 6, 7];
 
+export interface InitialCharacter {
+  id: string;
+  name: string;
+  class: string;
+  level: number;
+  season: number;
+  isHardcore: boolean;
+}
+
 interface Props {
   open: boolean;
   onClose: () => void;
   onSuccess: () => void;
+  /** Optional — when present the modal switches to edit mode. */
+  initial?: InitialCharacter | null;
 }
 
-export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
+export function AddCharacterModal({ open, onClose, onSuccess, initial }: Props) {
+  const isEdit = !!initial;
   const [name, setName] = useState('');
   const [klass, setKlass] = useState<string>('');
   const [level, setLevel] = useState(60);
@@ -23,7 +35,26 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // ESC to close
+  // Sync state with the initial character whenever it changes (or when the
+  // modal flips between create and edit).
+  useEffect(() => {
+    if (initial) {
+      setName(initial.name);
+      setKlass(initial.class);
+      setLevel(initial.level);
+      setSeason(initial.season);
+      setHardcore(initial.isHardcore);
+    } else {
+      setName('');
+      setKlass('');
+      setLevel(60);
+      setSeason(7);
+      setHardcore(false);
+    }
+    setError(null);
+  }, [initial, open]);
+
+  // ESC to close + body-scroll lock.
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
@@ -37,37 +68,33 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
     };
   }, [open, onClose]);
 
-  function reset() {
-    setName('');
-    setKlass('');
-    setLevel(60);
-    setSeason(7);
-    setHardcore(false);
-    setError(null);
-  }
-
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!klass || !name.trim()) return;
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/characters', {
-        method: 'POST',
+      const url = isEdit ? `/api/characters/${initial!.id}` : '/api/characters';
+      const method = isEdit ? 'PATCH' : 'POST';
+      // For edit, class can't change.
+      const body = isEdit
+        ? { name, level, season, isHardcore: hardcore }
+        : { name, class: klass, level, season, isHardcore: hardcore };
+      const res = await fetch(url, {
+        method,
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, class: klass, level, season, isHardcore: hardcore }),
+        body: JSON.stringify(body),
       });
       const json = await res.json();
       if (!res.ok || json.error) {
-        setError(json.error ?? 'Failed to create character');
+        setError(json.error ?? `Failed to ${isEdit ? 'update' : 'create'} character`);
         return;
       }
-      reset();
       onSuccess();
       onClose();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'Network error');
+    } catch (e2) {
+      setError(e2 instanceof Error ? e2.message : 'Network error');
     } finally {
       setSubmitting(false);
     }
@@ -86,7 +113,9 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
         className="bg-zinc-900 border border-zinc-700 rounded-2xl max-w-xl w-full p-6 flex flex-col gap-5 shadow-2xl"
       >
         <div className="flex items-center justify-between">
-          <h2 className="text-white text-xl font-bold">Add character</h2>
+          <h2 className="text-white text-xl font-bold">
+            {isEdit ? 'Edit character' : 'Add character'}
+          </h2>
           <button
             type="button"
             onClick={onClose}
@@ -99,7 +128,6 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
           </button>
         </div>
 
-        {/* Name */}
         <label className="flex flex-col gap-1.5">
           <span className="text-zinc-400 text-xs uppercase tracking-wide font-semibold">Name</span>
           <input
@@ -112,36 +140,41 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
           />
         </label>
 
-        {/* Class portraits */}
         <div>
-          <p className="text-zinc-400 text-xs uppercase tracking-wide font-semibold mb-2">Class</p>
+          <p className="text-zinc-400 text-xs uppercase tracking-wide font-semibold mb-2">
+            Class{isEdit && <span className="ml-2 text-zinc-600 normal-case text-[10px]">(locked)</span>}
+          </p>
           <div className="grid grid-cols-4 gap-2">
-            {CLASSES.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setKlass(c)}
-                className={`relative rounded-lg p-2 flex flex-col items-center gap-1.5 transition-all border ${
-                  klass === c
-                    ? 'border-amber-500 bg-amber-950/40 ring-1 ring-amber-500/40'
-                    : 'border-zinc-700 bg-zinc-800/50 hover:border-zinc-500'
-                }`}
-              >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={classImage(c)}
-                  alt={c}
-                  width={48}
-                  height={48}
-                  className="w-12 h-12 object-cover object-top rounded"
-                />
-                <span className="text-xs capitalize text-zinc-300">{c}</span>
-              </button>
-            ))}
+            {CLASSES.map((c) => {
+              const selected = klass === c;
+              const disabled = isEdit;
+              return (
+                <button
+                  key={c}
+                  type="button"
+                  disabled={disabled}
+                  onClick={() => !disabled && setKlass(c)}
+                  className={`relative rounded-lg p-2 flex flex-col items-center gap-1.5 transition-all border ${
+                    selected
+                      ? 'border-amber-500 bg-amber-950/40 ring-1 ring-amber-500/40'
+                      : 'border-zinc-700 bg-zinc-800/50 hover:border-zinc-500'
+                  } ${disabled && !selected ? 'opacity-30 cursor-not-allowed' : ''}`}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={classImage(c)}
+                    alt={c}
+                    width={48}
+                    height={48}
+                    className="w-12 h-12 object-cover object-top rounded"
+                  />
+                  <span className="text-xs capitalize text-zinc-300">{c}</span>
+                </button>
+              );
+            })}
           </div>
         </div>
 
-        {/* Level + Season */}
         <div className="grid grid-cols-2 gap-4">
           <label className="flex flex-col gap-1.5">
             <span className="text-zinc-400 text-xs uppercase tracking-wide font-semibold">
@@ -170,7 +203,6 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
           </label>
         </div>
 
-        {/* Hardcore */}
         <label className="flex items-center gap-3 cursor-pointer select-none">
           <span
             className={`relative w-10 h-6 rounded-full transition-colors ${
@@ -213,7 +245,9 @@ export function AddCharacterModal({ open, onClose, onSuccess }: Props) {
             disabled={submitting || !klass || !name.trim()}
             className="bg-amber-600 hover:bg-amber-500 disabled:opacity-50 disabled:cursor-not-allowed text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors"
           >
-            {submitting ? 'Creating…' : 'Create character'}
+            {submitting
+              ? isEdit ? 'Saving…' : 'Creating…'
+              : isEdit ? 'Save changes' : 'Create character'}
           </button>
         </div>
       </form>

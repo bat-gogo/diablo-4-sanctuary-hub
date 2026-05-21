@@ -38,6 +38,9 @@ export default async function BuildDetailPage({
   const passive = build.buildSkills.filter((bs) => bs.skill.type === 'passive');
   const ultimate = build.buildSkills.filter((bs) => bs.skill.type === 'ultimate');
 
+  const canEdit =
+    viewer != null && (viewer.userId === build.user.id || viewer.role === 'admin');
+
   return (
     <div>
       {/* HERO */}
@@ -50,12 +53,25 @@ export default async function BuildDetailPage({
         <div className="absolute inset-0 bg-gradient-to-b from-zinc-950/60 via-zinc-950/85 to-zinc-950" aria-hidden />
 
         <div className="relative z-10 max-w-5xl mx-auto px-4 py-12 flex flex-col gap-4">
-          <Link
-            href="/builds"
-            className="text-zinc-500 hover:text-amber-300 text-sm w-fit"
-          >
-            ← Back to builds
-          </Link>
+          <div className="flex items-center justify-between gap-2 flex-wrap">
+            <Link
+              href="/builds"
+              className="text-zinc-500 hover:text-amber-300 text-sm"
+            >
+              ← Back to builds
+            </Link>
+            {canEdit && (
+              <Link
+                href={`/builds/${build.id}/edit`}
+                className="inline-flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 hover:border-amber-500/40 text-zinc-200 hover:text-amber-300 rounded-lg px-3 py-1.5 text-xs font-semibold transition-colors"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L7.5 21H4v-3.5L16.732 3.732z" />
+                </svg>
+                Edit build
+              </Link>
+            )}
+          </div>
 
           <div className="flex items-center gap-2 flex-wrap">
             <ClassBadge d4Class={build.class} size="md" />
