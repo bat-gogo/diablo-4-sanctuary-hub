@@ -13,6 +13,7 @@ const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/builds',    label: 'Builds' },
   { href: '/items',     label: 'Items' },
   { href: '/party',     label: 'Party Finder' },
+  { href: '/events',    label: 'Events' },
   { href: '/tier-list', label: 'Tier List' },
 ];
 
