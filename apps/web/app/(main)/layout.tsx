@@ -9,10 +9,16 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   const token = (await cookies()).get('token')?.value ?? null;
   const payload = token ? await verifyToken(token) : null;
 
-  let user: { battletag: string; avatarUrl: string | null } | null = null;
+  let user:
+    | { battletag: string; avatarUrl: string | null; role: string }
+    | null = null;
   if (payload) {
     const [row] = await db
-      .select({ battletag: users.battletag, avatarUrl: users.avatarUrl })
+      .select({
+        battletag: users.battletag,
+        avatarUrl: users.avatarUrl,
+        role: users.role,
+      })
       .from(users)
       .where(eq(users.id, payload.userId))
       .limit(1);

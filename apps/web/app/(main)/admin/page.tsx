@@ -9,6 +9,7 @@ import {
 import { db } from '@/lib/db';
 import { FeatureToggleButton } from '@/components/admin/FeatureToggleButton';
 import { MakeAdminButton } from '@/components/admin/MakeAdminButton';
+import { RoleBadge } from '@/components/admin/RoleBadge';
 
 export default async function AdminOverviewPage() {
   const [
@@ -57,50 +58,43 @@ export default async function AdminOverviewPage() {
   ]);
 
   return (
-    <div className="flex flex-col gap-8">
-      {/* Stat cards */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <div className="flex flex-col gap-10">
+      {/* Stat cards — same visual rhythm as the home page sections. */}
+      <section className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <Stat label="Users"        value={userCount.toLocaleString()} />
         <Stat label="Builds"       value={buildCount.toLocaleString()} />
         <Stat label="Open parties" value={openParties.toLocaleString()} />
+        <Stat label="Comments"     value={commentCount.toLocaleString()} />
         <Stat label="Total views"  value={totalViews.toLocaleString()} />
-        <Stat label="Comments"     value={commentCount.toLocaleString()} className="sm:col-span-2 md:col-span-4" />
       </section>
 
       {/* Recent builds */}
       <section>
-        <header className="flex items-end justify-between mb-3">
-          <h2 className="text-white text-xl font-bold">Recent builds</h2>
-          <Link href="/admin/builds" className="text-amber-400 hover:text-amber-300 text-sm">
-            View all →
-          </Link>
-        </header>
-        <div className="overflow-x-auto border border-zinc-800 rounded-xl">
+        <SectionHeader title="Recent builds" href="/admin/builds" />
+        <div className="overflow-x-auto border border-zinc-800 rounded-xl bg-zinc-900/40">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900/60 text-zinc-400">
+            <thead className="bg-zinc-900/80 text-zinc-400 border-b border-zinc-800">
               <tr>
-                <Th>Title</Th><Th>Class</Th><Th>Author</Th><Th>S</Th>
+                <Th>Title</Th><Th>Class</Th><Th>Author</Th><Th align="center">S</Th>
                 <Th align="right">Views</Th><Th align="center">★</Th><Th>Actions</Th>
               </tr>
             </thead>
             <tbody>
               {recentBuilds.map((b) => (
-                <tr key={b.id} className="border-t border-zinc-800 hover:bg-zinc-900/60">
+                <tr key={b.id} className="border-t border-zinc-800 hover:bg-zinc-800/40 transition-colors">
                   <Td>
-                    <Link href={`/builds/${b.id}`} className="text-white hover:text-amber-300">
+                    <Link href={`/builds/${b.id}`} className="text-white hover:text-amber-300 font-medium">
                       {b.title}
                     </Link>
                   </Td>
                   <Td className="capitalize text-zinc-400">{b.class}</Td>
                   <Td className="text-zinc-400">{b.author.split('#')[0]}</Td>
-                  <Td className="text-amber-400">{b.season}</Td>
+                  <Td align="center" className="text-amber-400 tabular-nums">{b.season}</Td>
                   <Td align="right" className="text-zinc-300 tabular-nums">
                     {b.views.toLocaleString()}
                   </Td>
                   <Td align="center">
-                    {b.isFeatured && (
-                      <span className="text-amber-400" title="Featured">★</span>
-                    )}
+                    {b.isFeatured ? <span className="text-amber-400" title="Featured">★</span> : null}
                   </Td>
                   <Td>
                     <FeatureToggleButton id={b.id} initialFeatured={b.isFeatured} />
@@ -114,28 +108,21 @@ export default async function AdminOverviewPage() {
 
       {/* Recent users */}
       <section>
-        <header className="flex items-end justify-between mb-3">
-          <h2 className="text-white text-xl font-bold">Recent users</h2>
-          <Link href="/admin/users" className="text-amber-400 hover:text-amber-300 text-sm">
-            View all →
-          </Link>
-        </header>
-        <div className="overflow-x-auto border border-zinc-800 rounded-xl">
+        <SectionHeader title="Recent users" href="/admin/users" />
+        <div className="overflow-x-auto border border-zinc-800 rounded-xl bg-zinc-900/40">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-900/60 text-zinc-400">
+            <thead className="bg-zinc-900/80 text-zinc-400 border-b border-zinc-800">
               <tr>
                 <Th>Battletag</Th><Th>Email</Th><Th>Role</Th><Th>Joined</Th><Th>Actions</Th>
               </tr>
             </thead>
             <tbody>
               {recentUsers.map((u) => (
-                <tr key={u.id} className="border-t border-zinc-800 hover:bg-zinc-900/60">
+                <tr key={u.id} className="border-t border-zinc-800 hover:bg-zinc-800/40 transition-colors">
                   <Td className="text-white font-medium">{u.battletag}</Td>
-                  <Td className="text-zinc-400">{u.email}</Td>
-                  <Td>
-                    <RoleBadge role={u.role} />
-                  </Td>
-                  <Td className="text-zinc-500">
+                  <Td className="text-zinc-400 text-xs">{u.email}</Td>
+                  <Td><RoleBadge role={u.role} /></Td>
+                  <Td className="text-zinc-500 text-xs">
                     {new Date(u.createdAt).toLocaleDateString()}
                   </Td>
                   <Td>
@@ -153,22 +140,44 @@ export default async function AdminOverviewPage() {
   );
 }
 
-function Stat({ label, value, className = '' }: { label: string; value: string; className?: string }) {
+function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className={`bg-zinc-800 border border-zinc-700 rounded-xl p-6 ${className}`}>
-      <p className="text-zinc-400 text-xs uppercase tracking-wide font-semibold">
+    <div className="bg-zinc-800/60 backdrop-blur border border-zinc-700 rounded-xl p-5 hover:border-amber-500/40 transition-colors">
+      <p className="text-zinc-500 text-[10px] uppercase tracking-[0.2em] font-bold">
         {label}
       </p>
-      <p className="text-amber-400 text-3xl font-black tabular-nums mt-1">
+      <p className="text-amber-400 text-3xl font-black tabular-nums mt-2">
         {value}
       </p>
     </div>
   );
 }
 
-function Th({ children, align = 'left' }: { children: React.ReactNode; align?: 'left' | 'right' | 'center' }) {
+function SectionHeader({ title, href }: { title: string; href: string }) {
   return (
-    <th className={`px-3 py-2 text-xs uppercase tracking-wide font-semibold text-${align}`}>
+    <header className="flex items-end justify-between mb-3">
+      <h2 className="text-white text-2xl font-bold tracking-tight">{title}</h2>
+      <Link
+        href={href}
+        className="text-amber-400 hover:text-amber-300 text-sm font-medium"
+      >
+        View all →
+      </Link>
+    </header>
+  );
+}
+
+function Th({
+  children,
+  align = 'left',
+}: {
+  children: React.ReactNode;
+  align?: 'left' | 'right' | 'center';
+}) {
+  return (
+    <th
+      className={`px-3 py-2.5 text-[10px] uppercase tracking-[0.15em] font-bold text-${align}`}
+    >
       {children}
     </th>
   );
@@ -183,19 +192,5 @@ function Td({
   align?: 'left' | 'right' | 'center';
   className?: string;
 }) {
-  return <td className={`px-3 py-2 text-${align} ${className}`}>{children}</td>;
-}
-
-export function RoleBadge({ role }: { role: string }) {
-  const cls =
-    role === 'admin'
-      ? 'bg-amber-900/60 text-amber-300 border-amber-800'
-      : role === 'guest'
-      ? 'bg-zinc-800 text-zinc-500 border-zinc-700'
-      : 'bg-zinc-700 text-zinc-300 border-zinc-600';
-  return (
-    <span className={`inline-block text-[10px] font-bold uppercase tracking-wide rounded border px-1.5 py-0.5 ${cls}`}>
-      {role}
-    </span>
-  );
+  return <td className={`px-3 py-2.5 text-${align} ${className}`}>{children}</td>;
 }

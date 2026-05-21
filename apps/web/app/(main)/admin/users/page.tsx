@@ -4,7 +4,7 @@ import { builds, users } from '@sanctuary-hub/db';
 import { db } from '@/lib/db';
 import { verifyToken } from '@/lib/auth';
 import { RoleSelect } from '@/components/admin/RoleSelect';
-import { RoleBadge } from '@/app/admin/page';
+import { RoleBadge } from '@/components/admin/RoleBadge';
 
 export const metadata = { title: 'Users — Admin' };
 

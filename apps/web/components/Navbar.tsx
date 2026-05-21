@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { assetUrl, ASSETS } from '@sanctuary-hub/types';
 
 interface NavbarProps {
-  user: { battletag: string; avatarUrl: string | null } | null;
+  user: { battletag: string; avatarUrl: string | null; role: string } | null;
 }
 
 const NAV_LINKS: { href: string; label: string }[] = [
@@ -57,6 +57,18 @@ export function Navbar({ user }: NavbarProps) {
               {l.label}
             </Link>
           ))}
+          {user?.role === 'admin' && (
+            <Link
+              href="/admin"
+              className={`text-sm font-bold transition-colors inline-flex items-center gap-1.5 ${
+                isActive('/admin')
+                  ? 'text-amber-400'
+                  : 'text-amber-500 hover:text-amber-300'
+              }`}
+            >
+              <span aria-hidden>◈</span> Admin
+            </Link>
+          )}
         </div>
 
         {/* Right */}
@@ -146,6 +158,17 @@ export function Navbar({ user }: NavbarProps) {
                 {l.label}
               </Link>
             ))}
+            {user?.role === 'admin' && (
+              <Link
+                href="/admin"
+                onClick={() => setOpen(false)}
+                className={`py-2 text-sm font-bold inline-flex items-center gap-1.5 ${
+                  isActive('/admin') ? 'text-amber-400' : 'text-amber-500'
+                }`}
+              >
+                <span aria-hidden>◈</span> Admin
+              </Link>
+            )}
             <div className="border-t border-zinc-800 mt-2 pt-2">
               {user ? (
                 <>
