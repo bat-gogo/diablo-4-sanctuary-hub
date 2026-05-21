@@ -134,6 +134,57 @@ export async function getBuilds(filters: BuildFilters): Promise<{
   };
 }
 
+/**
+ * Top builds ranked by aggregated vote score (then views as tie-breaker).
+ * Used to populate the tier list.
+ */
+export async function getTierListBuilds(
+  limit = 200,
+): Promise<BuildWithMeta[]> {
+  const rows = await db
+    .select({
+      id: builds.id,
+      title: builds.title,
+      description: builds.description,
+      class: builds.class,
+      season: builds.season,
+      playstyle: builds.playstyle,
+      isFeatured: builds.isFeatured,
+      views: builds.views,
+      createdAt: builds.createdAt,
+      userId: users.id,
+      battletag: users.battletag,
+      avatarUrl: users.avatarUrl,
+      voteScore: sql<number>`COALESCE(SUM(${votes.value}), 0)`.as('vote_score'),
+      commentCount: sql<number>`COUNT(DISTINCT ${comments.id})`.as('comment_count'),
+    })
+    .from(builds)
+    .innerJoin(users, eq(builds.userId, users.id))
+    .leftJoin(votes, eq(votes.buildId, builds.id))
+    .leftJoin(comments, eq(comments.buildId, builds.id))
+    .groupBy(builds.id, users.id)
+    .orderBy(
+      sql`COALESCE(SUM(${votes.value}), 0) DESC`,
+      desc(builds.views),
+    )
+    .limit(limit);
+
+  return rows.map((r) => ({
+    id: r.id,
+    title: r.title,
+    description: r.description,
+    class: r.class,
+    season: r.season,
+    playstyle: r.playstyle,
+    isFeatured: r.isFeatured,
+    views: r.views,
+    createdAt: r.createdAt,
+    user: { id: r.userId, battletag: r.battletag, avatarUrl: r.avatarUrl },
+    voteScore: Number(r.voteScore),
+    commentCount: Number(r.commentCount),
+  }));
+}
+
 export async function getFeaturedBuilds(
   limit = 6,
 ): Promise<BuildWithMeta[]> {

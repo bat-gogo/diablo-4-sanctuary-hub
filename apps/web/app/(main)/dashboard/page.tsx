@@ -1,12 +1,17 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { eq } from 'drizzle-orm';
+import { desc, eq } from 'drizzle-orm';
 import { verifyToken } from '@/lib/auth';
 import { db } from '@/lib/db';
-import { builds as buildsTable, users } from '@sanctuary-hub/db';
+import {
+  builds as buildsTable,
+  characters as charactersTable,
+  users,
+} from '@sanctuary-hub/db';
 import { ClassBadge } from '@/components/ClassBadge';
 import { PlaystyleBadge } from '@/components/PlaystyleBadge';
+import { MyCharacters } from '@/components/MyCharacters';
 
 export const metadata = { title: 'Dashboard — Sanctuary Hub' };
 
@@ -27,19 +32,34 @@ export default async function DashboardPage() {
     .where(eq(users.id, payload.userId))
     .limit(1);
 
-  const myBuilds = await db
-    .select({
-      id: buildsTable.id,
-      title: buildsTable.title,
-      class: buildsTable.class,
-      season: buildsTable.season,
-      playstyle: buildsTable.playstyle,
-      views: buildsTable.views,
-      createdAt: buildsTable.createdAt,
-    })
-    .from(buildsTable)
-    .where(eq(buildsTable.userId, payload.userId))
-    .limit(20);
+  const [myBuilds, myCharacters] = await Promise.all([
+    db
+      .select({
+        id: buildsTable.id,
+        title: buildsTable.title,
+        class: buildsTable.class,
+        season: buildsTable.season,
+        playstyle: buildsTable.playstyle,
+        views: buildsTable.views,
+        createdAt: buildsTable.createdAt,
+      })
+      .from(buildsTable)
+      .where(eq(buildsTable.userId, payload.userId))
+      .orderBy(desc(buildsTable.createdAt))
+      .limit(20),
+    db
+      .select({
+        id: charactersTable.id,
+        name: charactersTable.name,
+        class: charactersTable.class,
+        level: charactersTable.level,
+        season: charactersTable.season,
+        isHardcore: charactersTable.isHardcore,
+      })
+      .from(charactersTable)
+      .where(eq(charactersTable.userId, payload.userId))
+      .orderBy(desc(charactersTable.createdAt)),
+  ]);
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -79,8 +99,9 @@ export default async function DashboardPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-10">
         <StatCard label="My builds" value={myBuilds.length.toString()} />
+        <StatCard label="Characters" value={myCharacters.length.toString()} />
         <StatCard
           label="Total views"
           value={myBuilds.reduce((s, b) => s + b.views, 0).toLocaleString()}
@@ -91,60 +112,77 @@ export default async function DashboardPage() {
         />
       </div>
 
+      {/* Characters */}
+      <section className="mb-12">
+        <MyCharacters initial={myCharacters} />
+      </section>
+
       {/* My builds */}
-      <h2 className="text-white text-2xl font-bold mb-4">My builds</h2>
-      {myBuilds.length === 0 ? (
-        <div className="bg-zinc-800/50 border border-zinc-800 rounded-xl p-10 text-center">
-          <p className="text-zinc-400">You haven't published any builds yet.</p>
+      <section>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-white text-2xl font-bold">My builds</h2>
           <Link
             href="/builds/create"
-            className="inline-block mt-4 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-5 py-2 rounded-lg"
+            className="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-4 py-1.5 rounded-lg text-sm transition-colors inline-flex items-center gap-1.5"
           >
-            Create your first build
+            <span className="text-lg leading-none">+</span> New build
           </Link>
         </div>
-      ) : (
-        <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {myBuilds.map((b) => (
-            <li
-              key={b.id}
-              className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 hover:border-amber-500/40 transition-colors"
+        {myBuilds.length === 0 ? (
+          <div className="bg-zinc-800/50 border border-zinc-800 rounded-xl p-10 text-center">
+            <p className="text-zinc-400">You haven't published any builds yet.</p>
+            <Link
+              href="/builds/create"
+              className="inline-block mt-4 bg-amber-600 hover:bg-amber-500 text-white font-semibold px-5 py-2 rounded-lg"
             >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <Link
-                    href={`/builds/${b.id}`}
-                    className="text-white font-semibold hover:text-amber-300 truncate block"
-                  >
-                    {b.title}
-                  </Link>
-                  <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                    <ClassBadge d4Class={b.class} size="sm" />
-                    <PlaystyleBadge playstyle={b.playstyle} />
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/60 text-amber-300">
-                      S{b.season}
-                    </span>
+              Create your first build
+            </Link>
+          </div>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {myBuilds.map((b) => (
+              <li
+                key={b.id}
+                className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 hover:border-amber-500/40 transition-colors"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <Link
+                      href={`/builds/${b.id}`}
+                      className="text-white font-semibold hover:text-amber-300 truncate block"
+                    >
+                      {b.title}
+                    </Link>
+                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
+                      <ClassBadge d4Class={b.class} size="sm" />
+                      <PlaystyleBadge playstyle={b.playstyle} />
+                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/60 text-amber-300">
+                        S{b.season}
+                      </span>
+                    </div>
                   </div>
+                  <span className="text-zinc-500 text-xs tabular-nums">
+                    👁 {b.views.toLocaleString()}
+                  </span>
                 </div>
-                <span className="text-zinc-500 text-xs tabular-nums">
-                  👁 {b.views.toLocaleString()}
-                </span>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-zinc-800/60 border border-zinc-800 rounded-xl p-5">
+    <div className="bg-zinc-800/60 border border-zinc-800 rounded-xl p-4">
       <p className="text-zinc-500 text-xs uppercase tracking-wide font-semibold">
         {label}
       </p>
-      <p className="text-white text-3xl font-black mt-1 tabular-nums">{value}</p>
+      <p className="text-white text-2xl md:text-3xl font-black mt-1 tabular-nums">
+        {value}
+      </p>
     </div>
   );
 }
