@@ -1,0 +1,173 @@
+[
+  {
+    "name": "d4life-list",
+    "url": "https://diablo4.life/api/trackers/list",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 274,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4life-list.json",
+    "preview": "{\"helltide\":{\"time\":1779364500000},\"worldBoss\":{\"name\":\"Avarice, the Gold Cursed\",\"time\":1779370200000},\"nextWorldBoss\":{\"name\":\"Avarice, the Gold Cursed\",\"time\":1779370200000,\"_id\":\"6a0eedfc16f57100d24e58c4\"},\"zoneEvent\":{\"time\":1779364200000},\"chestRespawn\":1779368400000}"
+  },
+  {
+    "name": "d4life-wb-history",
+    "url": "https://diablo4.life/api/trackers/worldBoss/reportHistory",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 2309,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4life-wb-history.json",
+    "preview": "{\"reports\":[{\"_id\":\"66534e203e302ec42d2ad974\",\"name\":\"Avarice, the Gold Cursed\",\"location\":\"Fields\u00a0of\u00a0Desecration - Hawezar\",\"spawnTime\":1716735600000,\"tier\":1,\"reportTime\":1716735520580,\"user\":{\"displayName\":\"MiketheMason#1924\",\"uid\":\"860628962\",\"status\":\"clean\",\"renown\":0},\"status\":\"reported\",\"statusUpdates\":[{\"status\":\"reported\",\"user\":{\"_id\":\"665ff3db584ec3f70cdeb527\",\"notificationCount\":0,\""
+  },
+  {
+    "name": "d4life-ht-history",
+    "url": "https://diablo4.life/api/trackers/helltide/reportHistory",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 1226,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4life-ht-history.json",
+    "preview": "{\"reports\":[{\"_id\":\"6664d46e51357d4320e00721\",\"name\":\"the Helltide Rises\",\"location\":\"Fractured Peaks\",\"spawnTime\":1717889100000,\"tier\":1,\"reportTime\":1717884014760,\"user\":{\"displayName\":\"Zahyra#21277\",\"uid\":\"137772953\",\"status\":\"clean\",\"renown\":0}},{\"_id\":\"6664720172b5660d9bd8d6c5\",\"name\":\"the Helltide Rises\",\"location\":\"Dry Steppes\",\"spawnTime\":1717864800000,\"tier\":1,\"reportTime\":1717858817757,\""
+  },
+  {
+    "name": "d4life-zone-history",
+    "url": "https://diablo4.life/api/trackers/zone/reportHistory",
+    "status": 200,
+    "content_type": "application/json; charset=utf-8",
+    "bytes": 14,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4life-zone-history.json",
+    "preview": "{\"reports\":[]}"
+  },
+  {
+    "name": "d4api-root",
+    "url": "https://d4api.dev/",
+    "status": 0,
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "name": "d4api-skills",
+    "url": "https://d4api.dev/skills",
+    "status": 0,
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "name": "d4api-skills-barb",
+    "url": "https://d4api.dev/skills/barbarian",
+    "status": 0,
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "name": "d4api-items",
+    "url": "https://d4api.dev/items",
+    "status": 0,
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "name": "d4api-classes",
+    "url": "https://d4api.dev/classes",
+    "status": 0,
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "name": "d4api-aspects",
+    "url": "https://d4api.dev/aspects",
+    "status": 0,
+    "error": "<urlopen error [Errno 8] nodename nor servname provided, or not known>"
+  },
+  {
+    "name": "diablotools-readme",
+    "url": "https://raw.githubusercontent.com/DiabloTools/d4data/main/README.md",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "diablotools-skill-bash",
+    "url": "https://raw.githubusercontent.com/DiabloTools/d4data/main/data/base/meta/Skill/sno_Barbarian_Bash.json",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "diablotools-item-sword",
+    "url": "https://raw.githubusercontent.com/DiabloTools/d4data/main/data/base/meta/Item/itm_Unique_Barbarian_1H_Sword_001.json",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "diablotools-actor-ashava",
+    "url": "https://raw.githubusercontent.com/DiabloTools/d4data/main/data/base/meta/Actor/mon_Ashava.json",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "blizz-readme",
+    "url": "https://raw.githubusercontent.com/blizzhackers/d4data/master/README.md",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "blizz-pages",
+    "url": "https://blizzhackers.github.io/d4data/",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 2246,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/blizz-pages.html",
+    "preview": "<!DOCTYPE html>\n<html lang=\"en-US\">\n  <head>\n    <meta charset=\"UTF-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n\n<!-- Begin Jekyll SEO tag v2.8.0 -->\n<title>d4data | Diablo 4 Data Files</title>\n<meta name=\"generator\" content=\"Jekyll v3.9.5\" />\n<meta property=\"og:title\" content=\"d4data\" />\n<meta property=\"og:"
+  },
+  {
+    "name": "blizz-tex",
+    "url": "https://files.blizzhackers.dev/d4tex/",
+    "status": 0,
+    "error": "<urlopen error timed out>"
+  },
+  {
+    "name": "helltides-root",
+    "url": "https://helltides.com/",
+    "status": 200,
+    "content_type": "text/html;charset=utf-8",
+    "bytes": 118014,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/helltides-root.html",
+    "preview": "<!DOCTYPE html><html  data-capo=\"\"><head><meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Diablo 4 Helltide Event Tracker and Chest Locations</title>\n<script src=\"https://www.googletagmanager.com/gtag/js?id=G-0H1PGEMM59\" async></script>\n<style>@import\"https://rsms.me/inter/inter.css\";@import\"https://fonts.googleapis.com/css2?family=Roboto+Mono:wght"
+  },
+  {
+    "name": "helltides-timers",
+    "url": "https://helltides.com/api/timers",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "helltides-zones",
+    "url": "https://helltides.com/data/zones.json",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "helltides-chests",
+    "url": "https://helltides.com/data/chests.json",
+    "status": 404,
+    "error": "Not Found"
+  },
+  {
+    "name": "d4armory-leaderboard",
+    "url": "https://d4armory.io/api/leaderboard",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 109741,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4armory-leaderboard.html",
+    "preview": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Diablo IV</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=2\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:locale\" content=\"en_US\"><meta property=\"description\" content=\"Diablo IV is an open world action-RPG developed by Blizzard Entertainment.\"><meta property=\"og:title\" content=\"Diablo IV\"><meta p"
+  },
+  {
+    "name": "d4armory-events-boss",
+    "url": "https://d4armory.io/api/events/boss",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 109741,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4armory-events-boss.html",
+    "preview": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Diablo IV</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=2\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:locale\" content=\"en_US\"><meta property=\"description\" content=\"Diablo IV is an open world action-RPG developed by Blizzard Entertainment.\"><meta property=\"og:title\" content=\"Diablo IV\"><meta p"
+  },
+  {
+    "name": "d4armory-events-helltide",
+    "url": "https://d4armory.io/api/events/helltide",
+    "status": 200,
+    "content_type": "text/html; charset=utf-8",
+    "bytes": 109741,
+    "saved": "/Users/gogo/Downloads/Diablo 4/scripts/data-explore/responses/d4armory-events-helltide.html",
+    "preview": "<!DOCTYPE html><html lang=\"en-US\"><head><title>Diablo IV</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1,maximum-scale=2\"><meta property=\"og:type\" content=\"website\"><meta property=\"og:locale\" content=\"en_US\"><meta property=\"description\" content=\"Diablo IV is an open world action-RPG developed by Blizzard Entertainment.\"><meta property=\"og:title\" content=\"Diablo IV\"><meta p"
+  }
+]
