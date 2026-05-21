@@ -39,3 +39,9 @@ yarn-error.log*
 
 # claude code local user settings (not for commit)
 .claude/settings.local.json
+
+# raw SPA / HTML responses from the data-source probe script — useless
+# in git, the meaningful artefacts are SOURCES.md + probe-report.json
+# + the JSON responses
+scripts/data-explore/responses/*.html
+scripts/data-explore/responses/*.txt
