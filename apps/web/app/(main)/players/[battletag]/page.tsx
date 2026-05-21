@@ -10,12 +10,16 @@ import {
 import {
   builds as buildsTable,
   characters as charactersTable,
+  comments,
+  partyRequests,
   users,
   votes,
 } from '@sanctuary-hub/db';
 import { db } from '@/lib/db';
 import { ClassBadge } from '@/components/ClassBadge';
 import { BuildCard } from '@/components/BuildCard';
+import { RankBadge } from '@/components/RankBadge';
+import { calculateScore } from '@/lib/ranks';
 
 export default async function PlayerProfilePage({
   params,
@@ -81,6 +85,24 @@ export default async function PlayerProfilePage({
       .where(eq(buildsTable.userId, user.id)),
   ]);
 
+  // Activity counts feed the rank score.
+  const [[cmtAgg], [partyAgg]] = await Promise.all([
+    db
+      .select({ n: sql<number>`COUNT(*)::int` })
+      .from(comments)
+      .where(eq(comments.userId, user.id)),
+    db
+      .select({ n: sql<number>`COUNT(*)::int` })
+      .from(partyRequests)
+      .where(eq(partyRequests.userId, user.id)),
+  ]);
+  const score = calculateScore({
+    buildCount: stats?.buildCount ?? 0,
+    totalVotesReceived: stats?.voteScore ?? 0,
+    commentCount: cmtAgg?.n ?? 0,
+    partyRequestCount: partyAgg?.n ?? 0,
+  });
+
   // Pick most-played class for hero backdrop, fall back to first build's
   // class, then barbarian.
   const heroClass =
@@ -132,6 +154,9 @@ export default async function PlayerProfilePage({
                 #{user.battletag.split('#')[1]}
               </span>
             </h1>
+            <div className="mt-3">
+              <RankBadge score={score} size="md" showProgress />
+            </div>
             <div className="mt-3 flex gap-6 text-sm text-zinc-300 flex-wrap">
               <span><span className="text-white font-bold">{stats?.buildCount ?? 0}</span> builds</span>
               <span><span className="text-white font-bold">{(stats?.totalViews ?? 0).toLocaleString()}</span> views</span>

@@ -1,13 +1,17 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { classImage, skillIcon } from '@sanctuary-hub/types';
 import {
   getBuildById,
+  getComments,
   incrementViews,
 } from '@/lib/services/builds.service';
+import { verifyToken } from '@/lib/auth';
 import { ClassBadge } from '@/components/ClassBadge';
 import { PlaystyleBadge } from '@/components/PlaystyleBadge';
+import { CommentsSection } from '@/components/CommentsSection';
 
 export default async function BuildDetailPage({
   params,
@@ -20,6 +24,15 @@ export default async function BuildDetailPage({
   incrementViews(id).catch(() => {});
 
   const heroBg = classImage(build.class);
+
+  // First page of comments + current viewer (for the compose form gate).
+  const [commentsPage, viewer] = await Promise.all([
+    getComments(id, { limit: 10 }),
+    (async () => {
+      const token = (await cookies()).get('token')?.value ?? null;
+      return token ? await verifyToken(token) : null;
+    })(),
+  ]);
 
   const active = build.buildSkills.filter((bs) => bs.skill.type === 'active');
   const passive = build.buildSkills.filter((bs) => bs.skill.type === 'passive');
@@ -145,6 +158,18 @@ export default async function BuildDetailPage({
             </p>
           </div>
         </aside>
+      </section>
+
+      {/* Comments */}
+      <section className="max-w-5xl mx-auto px-4 pb-16 -mt-4">
+        <CommentsSection
+          buildId={build.id}
+          initialComments={commentsPage.comments}
+          initialNextCursor={commentsPage.nextCursor}
+          currentUserId={viewer?.userId ?? null}
+          currentUserRole={viewer?.role ?? null}
+          totalCount={build.commentCount}
+        />
       </section>
     </div>
   );

@@ -1,17 +1,22 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { desc, eq } from 'drizzle-orm';
+import { desc, eq, sql } from 'drizzle-orm';
 import { verifyToken } from '@/lib/auth';
 import { db } from '@/lib/db';
 import {
   builds as buildsTable,
   characters as charactersTable,
+  comments,
+  partyRequests,
   users,
+  votes,
 } from '@sanctuary-hub/db';
 import { ClassBadge } from '@/components/ClassBadge';
 import { PlaystyleBadge } from '@/components/PlaystyleBadge';
 import { MyCharacters } from '@/components/MyCharacters';
+import { RankBadge } from '@/components/RankBadge';
+import { calculateScore } from '@/lib/ranks';
 
 export const metadata = { title: 'Dashboard — Sanctuary Hub' };
 
@@ -32,7 +37,13 @@ export default async function DashboardPage() {
     .where(eq(users.id, payload.userId))
     .limit(1);
 
-  const [myBuilds, myCharacters] = await Promise.all([
+  const [
+    myBuilds,
+    myCharacters,
+    [voteAgg],
+    [commentAgg],
+    [partyAgg],
+  ] = await Promise.all([
     db
       .select({
         id: buildsTable.id,
@@ -59,7 +70,27 @@ export default async function DashboardPage() {
       .from(charactersTable)
       .where(eq(charactersTable.userId, payload.userId))
       .orderBy(desc(charactersTable.createdAt)),
+    db
+      .select({ voteScore: sql<number>`COALESCE(SUM(${votes.value}), 0)::int` })
+      .from(votes)
+      .innerJoin(buildsTable, eq(votes.buildId, buildsTable.id))
+      .where(eq(buildsTable.userId, payload.userId)),
+    db
+      .select({ n: sql<number>`COUNT(*)::int` })
+      .from(comments)
+      .where(eq(comments.userId, payload.userId)),
+    db
+      .select({ n: sql<number>`COUNT(*)::int` })
+      .from(partyRequests)
+      .where(eq(partyRequests.userId, payload.userId)),
   ]);
+
+  const score = calculateScore({
+    buildCount: myBuilds.length,
+    totalVotesReceived: voteAgg?.voteScore ?? 0,
+    commentCount: commentAgg?.n ?? 0,
+    partyRequestCount: partyAgg?.n ?? 0,
+  });
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
@@ -75,6 +106,9 @@ export default async function DashboardPage() {
             </span>
           </h1>
           <p className="text-zinc-500 text-sm mt-2">{me?.email}</p>
+          <div className="mt-3 max-w-xs">
+            <RankBadge score={score} size="md" showProgress />
+          </div>
         </div>
 
         <div className="flex flex-col items-end gap-2">
