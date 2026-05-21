@@ -1,8 +1,10 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { BuildCard } from './BuildCard';
 import { BuildCardSkeleton } from './BuildCardSkeleton';
+import { StaggerList, StaggerItem } from './MotionWrapper';
 import type { BuildWithMeta } from '@/lib/services/builds.service';
 
 interface BuildBrowserProps {
@@ -236,11 +238,18 @@ export function BuildBrowser({ initialBuilds, initialNextCursor }: BuildBrowserP
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {builds.map((b) => (
-              <BuildCard key={b.id} build={b} />
-            ))}
-          </div>
+          <AnimatePresence mode="popLayout">
+            <StaggerList
+              key={`${filters.class}-${filters.season}-${filters.playstyle}-${filters.search}`}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+            >
+              {builds.map((b) => (
+                <StaggerItem key={b.id}>
+                  <BuildCard build={b} />
+                </StaggerItem>
+              ))}
+            </StaggerList>
+          </AnimatePresence>
         )}
 
         {!isLoading && builds.length > 0 && (

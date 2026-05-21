@@ -4,6 +4,9 @@ import { db } from '@/lib/db';
 import { users } from '@sanctuary-hub/db';
 import { eq } from 'drizzle-orm';
 import { Navbar } from '@/components/Navbar';
+import { CommandPalette } from '@/components/CommandPalette';
+import { CommandPaletteProvider } from '@/contexts/CommandPaletteContext';
+import { PageTransition } from '@/components/PageTransition';
 
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
   const token = (await cookies()).get('token')?.value ?? null;
@@ -26,14 +29,19 @@ export default async function MainLayout({ children }: { children: React.ReactNo
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
-      <Navbar user={user} />
-      <main className="pt-16 flex-1">{children}</main>
-      <footer className="bg-zinc-950 border-t border-zinc-800 py-6">
-        <p className="text-center text-zinc-600 text-sm px-4">
-          Sanctuary Hub © 2026 — Fan site, not affiliated with Blizzard Entertainment
-        </p>
-      </footer>
-    </div>
+    <CommandPaletteProvider>
+      <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col">
+        <Navbar user={user} />
+        <main className="pt-16 flex-1">
+          <PageTransition>{children}</PageTransition>
+        </main>
+        <footer className="bg-zinc-950 border-t border-zinc-800 py-6">
+          <p className="text-center text-zinc-600 text-sm px-4">
+            Sanctuary Hub © 2026 — Fan site, not affiliated with Blizzard Entertainment
+          </p>
+        </footer>
+        <CommandPalette />
+      </div>
+    </CommandPaletteProvider>
   );
 }

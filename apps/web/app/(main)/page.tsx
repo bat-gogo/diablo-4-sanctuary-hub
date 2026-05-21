@@ -5,6 +5,7 @@ import { getPartyRequests } from '@/lib/services/party.service';
 import { BuildCard } from '@/components/BuildCard';
 import { PartyCard } from '@/components/PartyCard';
 import { EventTracker } from '@/components/EventTracker';
+import { FadeIn } from '@/components/MotionWrapper';
 
 export default async function HomePage() {
   const [featured, parties] = await Promise.all([
@@ -74,6 +75,7 @@ export default async function HomePage() {
 
       <div className="max-w-7xl mx-auto px-4 py-16 flex flex-col gap-16">
         {/* LIVE EVENTS */}
+        <FadeIn>
         <section>
           <div className="flex items-baseline justify-between mb-6">
             <h2 className="text-white text-2xl md:text-3xl font-bold tracking-tight">
@@ -83,8 +85,10 @@ export default async function HomePage() {
           </div>
           <EventTracker />
         </section>
+        </FadeIn>
 
         {/* FEATURED BUILDS */}
+        <FadeIn delay={0.05}>
         <section>
           <div className="flex items-baseline justify-between mb-6">
             <h2 className="text-white text-2xl md:text-3xl font-bold tracking-tight">
@@ -109,8 +113,10 @@ export default async function HomePage() {
             </div>
           )}
         </section>
+        </FadeIn>
 
         {/* ACTIVE PARTIES */}
+        <FadeIn delay={0.1}>
         <section>
           <div className="flex items-baseline justify-between mb-6">
             <h2 className="text-white text-2xl md:text-3xl font-bold tracking-tight">
@@ -135,6 +141,7 @@ export default async function HomePage() {
             </div>
           )}
         </section>
+        </FadeIn>
       </div>
     </div>
   );

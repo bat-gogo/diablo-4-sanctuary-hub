@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { assetUrl, ASSETS } from '@sanctuary-hub/types';
+import { useCommandPalette } from '@/contexts/CommandPaletteContext';
 
 interface NavbarProps {
   user: { battletag: string; avatarUrl: string | null; role: string } | null;
@@ -11,15 +12,18 @@ interface NavbarProps {
 
 const NAV_LINKS: { href: string; label: string }[] = [
   { href: '/builds',    label: 'Builds' },
+  { href: '/classes',   label: 'Classes' },
   { href: '/items',     label: 'Items' },
   { href: '/party',     label: 'Party Finder' },
   { href: '/events',    label: 'Events' },
   { href: '/tier-list', label: 'Tier List' },
+  { href: '/meta',      label: 'Meta' },
 ];
 
 export function Navbar({ user }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
+  const { setOpen: setPaletteOpen } = useCommandPalette();
   const [open, setOpen] = useState(false);
 
   function isActive(href: string) {
@@ -74,6 +78,18 @@ export function Navbar({ user }: NavbarProps) {
 
         {/* Right */}
         <div className="flex items-center gap-3">
+          {/* ⌘K trigger (desktop only) */}
+          <button
+            type="button"
+            onClick={() => setPaletteOpen(true)}
+            className="hidden md:inline-flex items-center gap-1.5 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-lg px-2 py-1 text-xs text-zinc-500 hover:text-zinc-300 transition-colors"
+            title="Open command palette"
+            aria-label="Open command palette"
+          >
+            <kbd className="font-mono">⌘K</kbd>
+            <span>search</span>
+          </button>
+
           {user ? (
             <div className="hidden sm:flex items-center gap-3">
               <Link

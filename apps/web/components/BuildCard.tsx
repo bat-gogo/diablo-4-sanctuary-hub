@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { classImage } from '@sanctuary-hub/types';
 import { ClassBadge } from './ClassBadge';
@@ -18,14 +19,17 @@ export function BuildCard({ build }: { build: BuildWithMeta }) {
   const author = build.user.battletag.split('#')[0];
 
   return (
-    <div
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.99 }}
+      transition={{ duration: 0.15 }}
       onClick={() => router.push(`/builds/${build.id}`)}
       role="link"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === 'Enter') router.push(`/builds/${build.id}`);
       }}
-      className="group relative overflow-hidden rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-amber-500/50 transition-all duration-200 hover:scale-[1.02] hover:shadow-lg hover:shadow-amber-500/10 p-4 flex flex-col gap-2 min-h-[180px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/60"
+      className="group relative overflow-hidden rounded-xl bg-zinc-800/80 border border-zinc-700 hover:border-amber-500/50 transition-colors duration-200 hover:shadow-lg hover:shadow-amber-500/10 p-4 flex flex-col gap-2 min-h-[180px] cursor-pointer focus:outline-none focus:ring-2 focus:ring-amber-500/60"
     >
       <div
         className="absolute inset-0 bg-cover bg-top opacity-20 group-hover:opacity-30 transition-opacity"
@@ -91,6 +95,6 @@ export function BuildCard({ build }: { build: BuildWithMeta }) {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
