@@ -1,5 +1,8 @@
+import { cookies } from 'next/headers';
+import { verifyToken } from '@/lib/auth';
 import { getPartyRequests } from '@/lib/services/party.service';
 import { PartyCard } from '@/components/PartyCard';
+import { CreatePartyButton } from '@/components/CreatePartyButton';
 
 export const metadata = { title: 'Party Finder — Sanctuary Hub' };
 
@@ -23,6 +26,9 @@ export default async function PartyFinderPage({
   const activity = sp.activity ?? '';
   const status = sp.status ?? 'open';
 
+  const token = (await cookies()).get('token')?.value ?? null;
+  const payload = token ? await verifyToken(token) : null;
+
   const { requests } = await getPartyRequests({
     activity: activity || undefined,
     status: status || undefined,
@@ -31,16 +37,19 @@ export default async function PartyFinderPage({
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-10">
-      <header className="mb-8">
-        <p className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">
-          Looking for Group
-        </p>
-        <h1 className="text-white text-4xl md:text-5xl font-black mt-1">
-          Party Finder
-        </h1>
-        <p className="text-zinc-500 mt-2">
-          Find Sanctuary's wanderers gathering for endgame activities.
-        </p>
+      <header className="mb-8 flex items-end justify-between gap-4 flex-wrap">
+        <div>
+          <p className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase">
+            Looking for Group
+          </p>
+          <h1 className="text-white text-4xl md:text-5xl font-black mt-1">
+            Party Finder
+          </h1>
+          <p className="text-zinc-500 mt-2">
+            Find Sanctuary&apos;s wanderers gathering for endgame activities.
+          </p>
+        </div>
+        <CreatePartyButton disabled={!payload} />
       </header>
 
       {/* Activity tabs */}
@@ -87,14 +96,18 @@ export default async function PartyFinderPage({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {requests.map((r) => (
-            <PartyCard key={r.id} request={r} />
+            <PartyCard
+              key={r.id}
+              request={r}
+              viewerId={payload?.userId ?? null}
+              viewerRole={payload?.role ?? null}
+            />
           ))}
         </div>
       )}
 
       <p className="text-zinc-600 text-xs text-center mt-10">
-        Showing {requests.length} request{requests.length === 1 ? '' : 's'} ·
-        {' '}post creation coming soon.
+        Showing {requests.length} request{requests.length === 1 ? '' : 's'}.
       </p>
     </div>
   );
