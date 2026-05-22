@@ -12,9 +12,8 @@ import {
   users,
   votes,
 } from '@sanctuary-hub/db';
-import { ClassBadge } from '@/components/ClassBadge';
-import { PlaystyleBadge } from '@/components/PlaystyleBadge';
 import { MyCharacters } from '@/components/MyCharacters';
+import { MyBuildRow } from '@/components/MyBuildRow';
 import { RankBadge } from '@/components/RankBadge';
 import { calculateScore } from '@/lib/ranks';
 
@@ -175,31 +174,7 @@ export default async function DashboardPage() {
         ) : (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {myBuilds.map((b) => (
-              <li
-                key={b.id}
-                className="bg-zinc-800 border border-zinc-700 rounded-xl p-4 hover:border-amber-500/40 transition-colors"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <Link
-                      href={`/builds/${b.id}`}
-                      className="text-white font-semibold hover:text-amber-300 truncate block"
-                    >
-                      {b.title}
-                    </Link>
-                    <div className="flex items-center gap-1.5 mt-2 flex-wrap">
-                      <ClassBadge d4Class={b.class} size="sm" />
-                      <PlaystyleBadge playstyle={b.playstyle} />
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-900/60 text-amber-300">
-                        S{b.season}
-                      </span>
-                    </div>
-                  </div>
-                  <span className="text-zinc-500 text-xs tabular-nums">
-                    👁 {b.views.toLocaleString()}
-                  </span>
-                </div>
-              </li>
+              <MyBuildRow key={b.id} build={b} />
             ))}
           </ul>
         )}
