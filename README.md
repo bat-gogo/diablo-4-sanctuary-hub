@@ -18,7 +18,7 @@
 [![Vercel](https://img.shields.io/badge/deployed-Vercel-000?style=flat-square&logo=vercel)](https://diablo-4-sanctuary-hub-web.vercel.app)
 
 [🌐 Live demo](https://diablo-4-sanctuary-hub-web.vercel.app) ·
-[📱 Android APK](https://github.com/bat-gogo/diablo-4-sanctuary-hub/releases/tag/diablo-4-sanctuary-hub-for-adnroid) ·
+[📱 Android APK](https://github.com/bat-gogo/diablo-4-sanctuary-hub/releases/tag/diablo-4-sanctuary-hub-for-android) ·
 [🗄 GitHub](https://github.com/bat-gogo/diablo-4-sanctuary-hub) ·
 [🚀 Deploy guide](./DEPLOY.md)
 
@@ -51,7 +51,7 @@ serverless Postgres + Cloudflare R2 + Vercel deployment.
 
 | Live web app           | <https://diablo-4-sanctuary-hub-web.vercel.app>                                                                  |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Android APK            | [Download from GitHub Releases](https://github.com/bat-gogo/diablo-4-sanctuary-hub/releases/tag/diablo-4-sanctuary-hub-for-adnroid) |
+| Android APK            | [Download from GitHub Releases](https://github.com/bat-gogo/diablo-4-sanctuary-hub/releases/tag/diablo-4-sanctuary-hub-for-android) |
 
 ### Demo credentials (one-tap on the login screen)
 
