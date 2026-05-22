@@ -51,7 +51,7 @@ serverless Postgres + Cloudflare R2 + Vercel deployment.
 
 | Live web app           | <https://diablo-4-sanctuary-hub-web.vercel.app>                                                                  |
 | ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| Android APK            | scan the QR on the [EAS build page](https://expo.dev/accounts/bat-gogo/projects/sanctuary-hub/builds/4abd4731-051e-4626-978b-783e03ee02d2) or download directly |
+| Android APK            | Android .apk  [release]([https://expo.dev/accounts/bat-gogo/projects/sanctuary-hub/builds/4abd4731-051e-4626-978b-783e03ee02d2](https://github.com/bat-gogo/diablo-4-sanctuary-hub/releases/tag/diablo-4-sanctuary-hub-for-adnroid) |
 
 ### Demo credentials (one-tap on the login screen)
 
