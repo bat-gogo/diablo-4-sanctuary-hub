@@ -8,17 +8,17 @@ import {
   type ReactNode,
 } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import { api } from './api';
 
 const TOKEN_KEY = 'sanctuary_hub_token';
-
-const API_URL =
-  process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
 
 export interface AuthUser {
   id: string;
   battletag: string;
   email: string;
   role: string;
+  avatarUrl: string | null;
+  createdAt: string;
 }
 
 export interface AuthState {
@@ -40,26 +40,6 @@ interface AuthContextValue {
 
 export const AuthContext = createContext<AuthContextValue | null>(null);
 
-async function jsonRequest<T>(
-  path: string,
-  init: RequestInit & { token?: string | null } = {},
-): Promise<T> {
-  const { token, headers, ...rest } = init;
-  const res = await fetch(`${API_URL}${path}`, {
-    ...rest,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      ...(headers as Record<string, string> | undefined),
-    },
-  });
-  const json = (await res.json()) as { data: T; error: string | null };
-  if (!res.ok || json.error) {
-    throw new Error(json.error ?? `HTTP ${res.status}`);
-  }
-  return json.data;
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AuthState>({
     user: null,
@@ -78,10 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setState({ user: null, token: null, isLoading: false });
           return;
         }
-        const data = await jsonRequest<{ user: AuthUser }>(
-          '/api/auth/me',
-          { token },
-        );
+        const data = await api<{ user: AuthUser }>('/api/auth/me', { token });
         if (!cancelled) {
           setState({ user: data.user, token, isLoading: false });
         }
@@ -97,11 +74,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const data = await jsonRequest<{ user: AuthUser; token: string }>(
+    const data = await api<{ user: AuthUser; token: string }>(
       '/api/auth/login',
       {
         method: 'POST',
-        body: JSON.stringify({ email, password }),
+        body: { email, password },
       },
     );
     await SecureStore.setItemAsync(TOKEN_KEY, data.token);
@@ -110,11 +87,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = useCallback(
     async (battletag: string, email: string, password: string) => {
-      const data = await jsonRequest<{ user: AuthUser; token: string }>(
+      const data = await api<{ user: AuthUser; token: string }>(
         '/api/auth/register',
         {
           method: 'POST',
-          body: JSON.stringify({ battletag, email, password }),
+          body: { battletag, email, password },
         },
       );
       await SecureStore.setItemAsync(TOKEN_KEY, data.token);

@@ -1,0 +1,37 @@
+{
+  "cli": {
+    "version": ">= 13.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_API_URL": "http://192.168.100.63:3000",
+        "EXPO_PUBLIC_R2_PUBLIC_URL": "https://pub-2d890d5d6d8d4694973387ba2949550d.r2.dev"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+      },
+      "env": {
+        "EXPO_PUBLIC_R2_PUBLIC_URL": "https://pub-2d890d5d6d8d4694973387ba2949550d.r2.dev"
+      }
+    },
+    "production-apk": {
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_R2_PUBLIC_URL": "https://pub-2d890d5d6d8d4694973387ba2949550d.r2.dev"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
