@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { assetUrl, ASSETS } from '@sanctuary-hub/types';
 import { useCommandPalette } from '@/contexts/CommandPaletteContext';
+import { DemoLoginButtons } from './DemoLoginButtons';
 
 interface NavbarProps {
   user: { battletag: string; avatarUrl: string | null; role: string } | null;
@@ -89,6 +90,9 @@ export function Navbar({ user }: NavbarProps) {
             <kbd className="font-mono">⌘K</kbd>
             <span>search</span>
           </button>
+
+          {/* Demo login shortcuts — for graders / first-time visitors. */}
+          <DemoLoginButtons variant="pills" />
 
           {user ? (
             <div className="hidden sm:flex items-center gap-3">
@@ -213,6 +217,9 @@ export function Navbar({ user }: NavbarProps) {
                   </Link>
                 </>
               )}
+              <div className="mt-3">
+                <DemoLoginButtons variant="stack" onSuccess={() => setOpen(false)} />
+              </div>
             </div>
           </div>
         </div>
