@@ -32,6 +32,13 @@
     "plugins": [
       "expo-secure-store",
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "fd776cea-07a1-445a-b484-78c2c4b8f25c"
+      }
+    },
+    "owner": "bat-gogo"
   }
 }
